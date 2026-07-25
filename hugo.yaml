@@ -1,0 +1,48 @@
+baseURL: 'http://192.168.0.200/'
+title: '我的运维作品集'
+languageCode: 'zh-CN'
+theme: 'PaperMod'
+
+# 顶层作者信息（RSS 模板需要）
+author:
+  name: 'Learner'
+  email: ''
+
+# 自定义参数（主题需要）
+params:
+  author: 'Learner'
+  description: '个人运维作品集'
+  ShowReadingTime: false
+  ShowShareButtons: false
+  ShowPostNavLinks: false
+  showDate: true
+  showAuthor: true
+
+# 菜单配置
+menu:
+  main:
+    - name: '首页'
+      url: '/'
+      weight: 1
+    - name: '关于'
+      url: '/about/'
+      weight: 2
+    - name: '博客'
+      url: '/posts/'
+      weight: 3
+    - name: '项目'
+      url: '/projects/'
+      weight: 4
+
+# 完全禁用 RSS 输出（解决所有 RSS 相关报错）
+outputs:
+  home:
+    - HTML
+  page:
+    - HTML
+  section:
+    - HTML
+  taxonomy:
+    - HTML
+  term:
+    - HTML

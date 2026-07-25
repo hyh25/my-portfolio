@@ -1,0 +1,38 @@
+# 站点基础配置
+baseURL = "http://192.168.0.200/"
+title = "我的运维作品集"
+languageCode = "zh-CN"
+theme = "PaperMod"
+
+# 启用中文友好时间格式
+defaultContentLanguage = "zh"
+
+# 菜单配置（导航栏）
+[[menu.main]]
+  name = "首页"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "关于"
+  url = "/about/"
+  weight = 2
+
+[[menu.main]]
+  name = "项目"
+  url = "/projects/"
+  weight = 3
+
+[[menu.main]]
+  name = "博客"
+  url = "/posts/"
+  weight = 4
+
+# PaperMod 主题参数
+[params]
+  homeInfoParams:
+    title: "你好，我是 Learner"
+    content: "正在学习 Linux 运维/SRE，目标是成为自由工程师。"
+  socialIcons:
+    - name: "github"
+      url: "https://github.com/你的用户名"
