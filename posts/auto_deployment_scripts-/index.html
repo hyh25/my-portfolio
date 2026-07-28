@@ -1,0 +1,148 @@
+<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>网站自动部署脚本 | 我的运维作品集</title><meta name=keywords content="powershell,github"><meta name=description content='脚本主要由AI生成，这里记录执行遇到的问题
+# 个人网站一键自动更新脚本
+# 自动构建Hugo网站并上传到GitHub Pages
+
+# ==========可配置参数==========
+$REPO_URL = "git@github.com:hyh25/my-portfolio.git" # GitHub仓库地址
+$BRANCH = "gh-pages" # GitHub Pages分支名称
+$COMMIT_MESSAGE = "🚀 自动更新网站 $(Get-Date -Format &#39;yyyy-MM-dd HH:mm:ss&#39;)" # 提交信息
+$HUGO_ARGS = "--minify" # Hugo构建参数
+
+Write-Host "🚀 正在构建 Hugo 静态文件..." -ForegroundColor Cyan
+
+# 1.执行Hugo构建（--minfy压缩代码）
+hugo $HUGO_ARGS
+
+# 2.检查上一步是否成功（$LASTEXITCODE是上一条命令的返回值，0代表成功）
+if($LASTEXITCODE -ne 0){
+    Write-Host "❌ Hugo 构建失败，请检查配置！" -ForegroundColor Red
+    exit 1 # 退出脚本，不再往下执行
+}
+
+Write-Host "✅ Hugo 构建成功！正在部署到gh-pages..." -ForegroundColor Green
+
+# 3.进入public目录
+cd public
+
+# 4.初始化Git仓库（如果尚未初始化）
+if(-not (Test-Path ".git")) {
+    Write-Host "📦 首次运行，初始化 Git 仓库..." -ForegroundColor Yellow
+    git init
+    git remote add origin $REPO_URL
+    git branch -M main
+} else {
+    # 检查远程仓库是否已设置
+    $remote = git remote get-url origin 2>$null
+    if(-not $remote) {
+        Write-Host "📦 远程仓库未设置，正在添加远程仓库..." -ForegroundColor Yellow
+        git remote add origin $REPO_URL
+    }
+}
+# 5.添加所有文件到Git暂存区
+git add .
+
+# 6.检查是否有更改需要提交
+$status = git status --porcelain
+if(-not $status) {
+    Write-Host "ℹ️ 没有更改需要提交，网站已是最新状态。" -ForegroundColor Yellow
+    cd .. # 返回上级目录
+    exit 0 # 退出脚本，不再往下执行
+}
+
+# 7.提交更改
+git commit -m $COMMIT_MESSAGE
+if($LASTEXITCODE -ne 0) {
+    Write-Host "❌ Git 提交失败，请检查配置！" -ForegroundColor Red
+    exit 1 # 退出脚本，不再往下执行
+}
+
+# 9.推送到远程仓库的gh-pages分支（强制覆盖）
+git push -f origin main:$BRANCH
+
+if($LASTEXITCODE -ne 0) {
+    Write-Host "❌ Git 推送失败，请检查配置！" -ForegroundColor Red
+    exit 1 # 退出脚本，不再往下执行
+}
+
+# 10.返回上级目录
+cd ..
+
+Write-Host "✅ 网站更新完成！请访问 https://hyh25.github.io/my-portfolio/ 查看最新内容。" -ForegroundColor Green
+在执行脚本时，可能遇到脚本报 MissingEndCurlyBrace → 编码问题，需保存为 UTF-8 with BOM'><meta name=author content="Learner"><link rel=canonical href=http://192.168.0.200:8080/posts/auto_deployment_scripts-/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=http://192.168.0.200:8080/favicon.ico><link rel=icon type=image/png sizes=16x16 href=http://192.168.0.200:8080/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=http://192.168.0.200:8080/favicon-32x32.png><link rel=apple-touch-icon href=http://192.168.0.200:8080/apple-touch-icon.png><link rel=mask-icon href=http://192.168.0.200:8080/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://192.168.0.200:8080/posts/auto_deployment_scripts-/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><meta property="og:url" content="http://192.168.0.200:8080/posts/auto_deployment_scripts-/"><meta property="og:site_name" content="我的运维作品集"><meta property="og:title" content="网站自动部署脚本"><meta property="og:description" content='脚本主要由AI生成，这里记录执行遇到的问题
+# 个人网站一键自动更新脚本# 自动构建Hugo网站并上传到GitHub Pages# ==========可配置参数==========$REPO_URL = "git@github.com:hyh25/my-portfolio.git" # GitHub仓库地址$BRANCH = "gh-pages" # GitHub Pages分支名称$COMMIT_MESSAGE = "🚀 自动更新网站 $(Get-Date -Format &#39;yyyy-MM-dd HH:mm:ss&#39;)" # 提交信息$HUGO_ARGS = "--minify" # Hugo构建参数Write-Host "🚀 正在构建 Hugo 静态文件..." -ForegroundColor Cyan# 1.执行Hugo构建（--minfy压缩代码）hugo $HUGO_ARGS# 2.检查上一步是否成功（$LASTEXITCODE是上一条命令的返回值，0代表成功）if($LASTEXITCODE -ne 0){Write-Host "❌ Hugo 构建失败，请检查配置！" -ForegroundColor Redexit 1 # 退出脚本，不再往下执行}Write-Host "✅ Hugo 构建成功！正在部署到gh-pages..." -ForegroundColor Green# 3.进入public目录cd public# 4.初始化Git仓库（如果尚未初始化）if(-not (Test-Path ".git")) {Write-Host "📦 首次运行，初始化 Git 仓库..." -ForegroundColor Yellowgit initgit remote add origin $REPO_URLgit branch -M main} else {# 检查远程仓库是否已设置$remote = git remote get-url origin 2>$nullif(-not $remote) {Write-Host "📦 远程仓库未设置，正在添加远程仓库..." -ForegroundColor Yellowgit remote add origin $REPO_URL}}# 5.添加所有文件到Git暂存区git add .# 6.检查是否有更改需要提交$status = git status --porcelainif(-not $status) {Write-Host "ℹ️ 没有更改需要提交，网站已是最新状态。" -ForegroundColor Yellowcd .. # 返回上级目录exit 0 # 退出脚本，不再往下执行}# 7.提交更改git commit -m $COMMIT_MESSAGEif($LASTEXITCODE -ne 0) {Write-Host "❌ Git 提交失败，请检查配置！" -ForegroundColor Redexit 1 # 退出脚本，不再往下执行}# 9.推送到远程仓库的gh-pages分支（强制覆盖）git push -f origin main:$BRANCHif($LASTEXITCODE -ne 0) {Write-Host "❌ Git 推送失败，请检查配置！" -ForegroundColor Redexit 1 # 退出脚本，不再往下执行}# 10.返回上级目录cd ..Write-Host "✅ 网站更新完成！请访问 https://hyh25.github.io/my-portfolio/ 查看最新内容。" -ForegroundColor Green 在执行脚本时，可能遇到脚本报 MissingEndCurlyBrace → 编码问题，需保存为 UTF-8 with BOM'><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:tag" content="Powershell"><meta property="article:tag" content="Github"><meta name=twitter:card content="summary"><meta name=twitter:title content="网站自动部署脚本"><meta name=twitter:description content='脚本主要由AI生成，这里记录执行遇到的问题
+# 个人网站一键自动更新脚本# 自动构建Hugo网站并上传到GitHub Pages# ==========可配置参数==========$REPO_URL = "git@github.com:hyh25/my-portfolio.git" # GitHub仓库地址$BRANCH = "gh-pages" # GitHub Pages分支名称$COMMIT_MESSAGE = "🚀 自动更新网站 $(Get-Date -Format &#39;yyyy-MM-dd HH:mm:ss&#39;)" # 提交信息$HUGO_ARGS = "--minify" # Hugo构建参数Write-Host "🚀 正在构建 Hugo 静态文件..." -ForegroundColor Cyan# 1.执行Hugo构建（--minfy压缩代码）hugo $HUGO_ARGS# 2.检查上一步是否成功（$LASTEXITCODE是上一条命令的返回值，0代表成功）if($LASTEXITCODE -ne 0){Write-Host "❌ Hugo 构建失败，请检查配置！" -ForegroundColor Redexit 1 # 退出脚本，不再往下执行}Write-Host "✅ Hugo 构建成功！正在部署到gh-pages..." -ForegroundColor Green# 3.进入public目录cd public# 4.初始化Git仓库（如果尚未初始化）if(-not (Test-Path ".git")) {Write-Host "📦 首次运行，初始化 Git 仓库..." -ForegroundColor Yellowgit initgit remote add origin $REPO_URLgit branch -M main} else {# 检查远程仓库是否已设置$remote = git remote get-url origin 2>$nullif(-not $remote) {Write-Host "📦 远程仓库未设置，正在添加远程仓库..." -ForegroundColor Yellowgit remote add origin $REPO_URL}}# 5.添加所有文件到Git暂存区git add .# 6.检查是否有更改需要提交$status = git status --porcelainif(-not $status) {Write-Host "ℹ️ 没有更改需要提交，网站已是最新状态。" -ForegroundColor Yellowcd .. # 返回上级目录exit 0 # 退出脚本，不再往下执行}# 7.提交更改git commit -m $COMMIT_MESSAGEif($LASTEXITCODE -ne 0) {Write-Host "❌ Git 提交失败，请检查配置！" -ForegroundColor Redexit 1 # 退出脚本，不再往下执行}# 9.推送到远程仓库的gh-pages分支（强制覆盖）git push -f origin main:$BRANCHif($LASTEXITCODE -ne 0) {Write-Host "❌ Git 推送失败，请检查配置！" -ForegroundColor Redexit 1 # 退出脚本，不再往下执行}# 10.返回上级目录cd ..Write-Host "✅ 网站更新完成！请访问 https://hyh25.github.io/my-portfolio/ 查看最新内容。" -ForegroundColor Green 在执行脚本时，可能遇到脚本报 MissingEndCurlyBrace → 编码问题，需保存为 UTF-8 with BOM'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"学习博客","item":"http://192.168.0.200:8080/posts/"},{"@type":"ListItem","position":2,"name":"网站自动部署脚本","item":"http://192.168.0.200:8080/posts/auto_deployment_scripts-/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"网站自动部署脚本","name":"网站自动部署脚本","description":"脚本主要由AI生成，这里记录执行遇到的问题\n# 个人网站一键自动更新脚本\r# 自动构建Hugo网站并上传到GitHub Pages\r# ==========可配置参数==========\r$REPO_URL = \u0026#34;git@github.com:hyh25/my-portfolio.git\u0026#34; # GitHub仓库地址\r$BRANCH = \u0026#34;gh-pages\u0026#34; # GitHub Pages分支名称\r$COMMIT_MESSAGE = \u0026#34;🚀 自动更新网站 $(Get-Date -Format \u0026#39;yyyy-MM-dd HH:mm:ss\u0026#39;)\u0026#34; # 提交信息\r$HUGO_ARGS = \u0026#34;--minify\u0026#34; # Hugo构建参数\rWrite-Host \u0026#34;🚀 正在构建 Hugo 静态文件...\u0026#34; -ForegroundColor Cyan\r# 1.执行Hugo构建（--minfy压缩代码）\rhugo $HUGO_ARGS\r# 2.检查上一步是否成功（$LASTEXITCODE是上一条命令的返回值，0代表成功）\rif($LASTEXITCODE -ne 0){\rWrite-Host \u0026#34;❌ Hugo 构建失败，请检查配置！\u0026#34; -ForegroundColor Red\rexit 1 # 退出脚本，不再往下执行\r}\rWrite-Host \u0026#34;✅ Hugo 构建成功！正在部署到gh-pages...\u0026#34; -ForegroundColor Green\r# 3.进入public目录\rcd public\r# 4.初始化Git仓库（如果尚未初始化）\rif(-not (Test-Path \u0026#34;.git\u0026#34;)) {\rWrite-Host \u0026#34;📦 首次运行，初始化 Git 仓库...\u0026#34; -ForegroundColor Yellow\rgit init\rgit remote add origin $REPO_URL\rgit branch -M main\r} else {\r# 检查远程仓库是否已设置\r$remote = git remote get-url origin 2\u0026gt;$null\rif(-not $remote) {\rWrite-Host \u0026#34;📦 远程仓库未设置，正在添加远程仓库...\u0026#34; -ForegroundColor Yellow\rgit remote add origin $REPO_URL\r}\r}\r# 5.添加所有文件到Git暂存区\rgit add .\r# 6.检查是否有更改需要提交\r$status = git status --porcelain\rif(-not $status) {\rWrite-Host \u0026#34;ℹ️ 没有更改需要提交，网站已是最新状态。\u0026#34; -ForegroundColor Yellow\rcd .. # 返回上级目录\rexit 0 # 退出脚本，不再往下执行\r}\r# 7.提交更改\rgit commit -m $COMMIT_MESSAGE\rif($LASTEXITCODE -ne 0) {\rWrite-Host \u0026#34;❌ Git 提交失败，请检查配置！\u0026#34; -ForegroundColor Red\rexit 1 # 退出脚本，不再往下执行\r}\r# 9.推送到远程仓库的gh-pages分支（强制覆盖）\rgit push -f origin main:$BRANCH\rif($LASTEXITCODE -ne 0) {\rWrite-Host \u0026#34;❌ Git 推送失败，请检查配置！\u0026#34; -ForegroundColor Red\rexit 1 # 退出脚本，不再往下执行\r}\r# 10.返回上级目录\rcd ..\rWrite-Host \u0026#34;✅ 网站更新完成！请访问 https://hyh25.github.io/my-portfolio/ 查看最新内容。\u0026#34; -ForegroundColor Green 在执行脚本时，可能遇到脚本报 MissingEndCurlyBrace → 编码问题，需保存为 UTF-8 with BOM\n","keywords":["powershell","github"],"articleBody":"脚本主要由AI生成，这里记录执行遇到的问题\n# 个人网站一键自动更新脚本\r# 自动构建Hugo网站并上传到GitHub Pages\r# ==========可配置参数==========\r$REPO_URL = \"git@github.com:hyh25/my-portfolio.git\" # GitHub仓库地址\r$BRANCH = \"gh-pages\" # GitHub Pages分支名称\r$COMMIT_MESSAGE = \"🚀 自动更新网站 $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')\" # 提交信息\r$HUGO_ARGS = \"--minify\" # Hugo构建参数\rWrite-Host \"🚀 正在构建 Hugo 静态文件...\" -ForegroundColor Cyan\r# 1.执行Hugo构建（--minfy压缩代码）\rhugo $HUGO_ARGS\r# 2.检查上一步是否成功（$LASTEXITCODE是上一条命令的返回值，0代表成功）\rif($LASTEXITCODE -ne 0){\rWrite-Host \"❌ Hugo 构建失败，请检查配置！\" -ForegroundColor Red\rexit 1 # 退出脚本，不再往下执行\r}\rWrite-Host \"✅ Hugo 构建成功！正在部署到gh-pages...\" -ForegroundColor Green\r# 3.进入public目录\rcd public\r# 4.初始化Git仓库（如果尚未初始化）\rif(-not (Test-Path \".git\")) {\rWrite-Host \"📦 首次运行，初始化 Git 仓库...\" -ForegroundColor Yellow\rgit init\rgit remote add origin $REPO_URL\rgit branch -M main\r} else {\r# 检查远程仓库是否已设置\r$remote = git remote get-url origin 2\u003e$null\rif(-not $remote) {\rWrite-Host \"📦 远程仓库未设置，正在添加远程仓库...\" -ForegroundColor Yellow\rgit remote add origin $REPO_URL\r}\r}\r# 5.添加所有文件到Git暂存区\rgit add .\r# 6.检查是否有更改需要提交\r$status = git status --porcelain\rif(-not $status) {\rWrite-Host \"ℹ️ 没有更改需要提交，网站已是最新状态。\" -ForegroundColor Yellow\rcd .. # 返回上级目录\rexit 0 # 退出脚本，不再往下执行\r}\r# 7.提交更改\rgit commit -m $COMMIT_MESSAGE\rif($LASTEXITCODE -ne 0) {\rWrite-Host \"❌ Git 提交失败，请检查配置！\" -ForegroundColor Red\rexit 1 # 退出脚本，不再往下执行\r}\r# 9.推送到远程仓库的gh-pages分支（强制覆盖）\rgit push -f origin main:$BRANCH\rif($LASTEXITCODE -ne 0) {\rWrite-Host \"❌ Git 推送失败，请检查配置！\" -ForegroundColor Red\rexit 1 # 退出脚本，不再往下执行\r}\r# 10.返回上级目录\rcd ..\rWrite-Host \"✅ 网站更新完成！请访问 https://hyh25.github.io/my-portfolio/ 查看最新内容。\" -ForegroundColor Green 在执行脚本时，可能遇到脚本报 MissingEndCurlyBrace → 编码问题，需保存为 UTF-8 with BOM\n","wordCount":"212","inLanguage":"en","datePublished":"0001-01-01T00:00:00Z","dateModified":"0001-01-01T00:00:00Z","author":{"@type":"Person","name":"Learner"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://192.168.0.200:8080/posts/auto_deployment_scripts-/"},"publisher":{"@type":"Organization","name":"我的运维作品集","logo":{"@type":"ImageObject","url":"http://192.168.0.200:8080/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=http://192.168.0.200:8080/ accesskey=h title="我的运维作品集 (Alt + H)">我的运维作品集</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=http://192.168.0.200:8080/ title=首页><span>首页</span></a></li><li><a href=http://192.168.0.200:8080/about/ title=关于><span>关于</span></a></li><li><a href=http://192.168.0.200:8080/archives/ title=归档><span>归档</span></a></li><li><a href=http://192.168.0.200:8080/posts/ title=博客><span>博客</span></a></li><li><a href=http://192.168.0.200:8080/projects/ title=项目><span>项目</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">网站自动部署脚本</h1><div class=post-meta><span>Learner</span></div></header><div class="post-content md-content"><p>脚本主要由AI生成，这里记录执行遇到的问题</p><pre tabindex=0><code># 个人网站一键自动更新脚本
+# 自动构建Hugo网站并上传到GitHub Pages
+
+# ==========可配置参数==========
+$REPO_URL = &#34;git@github.com:hyh25/my-portfolio.git&#34; # GitHub仓库地址
+$BRANCH = &#34;gh-pages&#34; # GitHub Pages分支名称
+$COMMIT_MESSAGE = &#34;🚀 自动更新网站 $(Get-Date -Format &#39;yyyy-MM-dd HH:mm:ss&#39;)&#34; # 提交信息
+$HUGO_ARGS = &#34;--minify&#34; # Hugo构建参数
+
+Write-Host &#34;🚀 正在构建 Hugo 静态文件...&#34; -ForegroundColor Cyan
+
+# 1.执行Hugo构建（--minfy压缩代码）
+hugo $HUGO_ARGS
+
+# 2.检查上一步是否成功（$LASTEXITCODE是上一条命令的返回值，0代表成功）
+if($LASTEXITCODE -ne 0){
+    Write-Host &#34;❌ Hugo 构建失败，请检查配置！&#34; -ForegroundColor Red
+    exit 1 # 退出脚本，不再往下执行
+}
+
+Write-Host &#34;✅ Hugo 构建成功！正在部署到gh-pages...&#34; -ForegroundColor Green
+
+# 3.进入public目录
+cd public
+
+# 4.初始化Git仓库（如果尚未初始化）
+if(-not (Test-Path &#34;.git&#34;)) {
+    Write-Host &#34;📦 首次运行，初始化 Git 仓库...&#34; -ForegroundColor Yellow
+    git init
+    git remote add origin $REPO_URL
+    git branch -M main
+} else {
+    # 检查远程仓库是否已设置
+    $remote = git remote get-url origin 2&gt;$null
+    if(-not $remote) {
+        Write-Host &#34;📦 远程仓库未设置，正在添加远程仓库...&#34; -ForegroundColor Yellow
+        git remote add origin $REPO_URL
+    }
+}
+# 5.添加所有文件到Git暂存区
+git add .
+
+# 6.检查是否有更改需要提交
+$status = git status --porcelain
+if(-not $status) {
+    Write-Host &#34;ℹ️ 没有更改需要提交，网站已是最新状态。&#34; -ForegroundColor Yellow
+    cd .. # 返回上级目录
+    exit 0 # 退出脚本，不再往下执行
+}
+
+# 7.提交更改
+git commit -m $COMMIT_MESSAGE
+if($LASTEXITCODE -ne 0) {
+    Write-Host &#34;❌ Git 提交失败，请检查配置！&#34; -ForegroundColor Red
+    exit 1 # 退出脚本，不再往下执行
+}
+
+# 9.推送到远程仓库的gh-pages分支（强制覆盖）
+git push -f origin main:$BRANCH
+
+if($LASTEXITCODE -ne 0) {
+    Write-Host &#34;❌ Git 推送失败，请检查配置！&#34; -ForegroundColor Red
+    exit 1 # 退出脚本，不再往下执行
+}
+
+# 10.返回上级目录
+cd ..
+
+Write-Host &#34;✅ 网站更新完成！请访问 https://hyh25.github.io/my-portfolio/ 查看最新内容。&#34; -ForegroundColor Green
+</code></pre><p>在执行脚本时，可能遇到脚本报 <code>MissingEndCurlyBrace</code> → 编码问题，需保存为 <code>UTF-8 with BOM</code></p></div><footer class=post-footer><ul class=post-tags><li><a href=http://192.168.0.200:8080/tags/powershell/>Powershell</a></li><li><a href=http://192.168.0.200:8080/tags/github/>Github</a></li></ul></footer></article></main><footer class=footer><span>&copy; 2026 <a href=http://192.168.0.200:8080/>我的运维作品集</a></span> ·
+<span>Powered by
+<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
+</a><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script></body></html>
