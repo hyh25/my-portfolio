@@ -69,7 +69,7 @@ severity: critical
 annotations:
 summary: "Nginx 服务已停止"
 description: "Nginx Exporter 采集失败，请检查 mysite 容器是否运行正常。" 修改 Prometheus 主配置
-...</p></div><footer class=entry-footer><span title='2026-07-29 18:30:00 -0800 -0800'>July 29, 2026</span>&nbsp;·&nbsp;<span>Learner</span></footer><a class=entry-link aria-label="post link to 使用Alertmanager+告警规则搭建告警系统" href=https://hyh25.github.io/my-portfolio/posts/%E5%91%8A%E8%AD%A6%E7%B3%BB%E7%BB%9F%E6%90%AD%E5%BB%BAalertmanager+%E5%91%8A%E8%AD%A6%E8%A7%84%E5%88%99/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>使用Prometheus+Grafana搭建监控系统</h2></header><div class=entry-content><p>整体目标 在虚拟机上搭建一套完整的监控系统，用于采集：
+...</p></div><footer class=entry-footer><span title='2026-07-29 18:30:00 +0800 CST'>July 29, 2026</span>&nbsp;·&nbsp;<span>Learner</span></footer><a class=entry-link aria-label="post link to 使用Alertmanager+告警规则搭建告警系统" href=https://hyh25.github.io/my-portfolio/posts/%E5%91%8A%E8%AD%A6%E7%B3%BB%E7%BB%9F%E6%90%AD%E5%BB%BAalertmanager+%E5%91%8A%E8%AD%A6%E8%A7%84%E5%88%99/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>使用Prometheus+Grafana搭建监控系统</h2></header><div class=entry-content><p>整体目标 在虚拟机上搭建一套完整的监控系统，用于采集：
 系统资源指标(cpu、内存、磁盘、网络) nginx服务指标(连接数、请求数、状态) 并通过Grafana提供可视化面板 系统架构和数据流向 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 虚拟机 192.168.0.200 │
 ├─────────────────────────────────────────────────────────────────────────────┤
