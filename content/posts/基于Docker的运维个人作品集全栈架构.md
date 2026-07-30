@@ -83,7 +83,7 @@ date: 2026-07-30T10:30:00+08:00
 [用户访问网站] ──→ [mysite 容器产生日志(stdout)]
                           │
                           ▼
-              [docker logs -f 重定向进程]
+              [改为“Systemd 日志重定向服务（docker logs -f）]
                           │
                           ▼
             [/var/log/mysite/access.log 宿主机文件]

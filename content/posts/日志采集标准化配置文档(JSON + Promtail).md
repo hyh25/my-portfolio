@@ -190,11 +190,9 @@ docker restart promtail
 ### ✅ 完成标准
 
 - Nginx 日志文件中的每一条记录都是合法 JSON。
-- `time_local` 字段使用 ISO8601 格式，包含时区偏移。
+- `time_local` 字段使用 ISO8601 格式，包含时区偏移（目前为 +00:00 UTC，Grafana 展示时会自动转换为浏览器时区
 - Promtail 能够稳定解析 `time_local` 字段，无报错。
 - Grafana 中日志时间与宿主机时间一致。
-
-我已在文档中补充了引号说明，确保不会遗漏这个你亲自追问过的细节。
 
 ---
 

@@ -132,6 +132,8 @@ COPY public /usr/share/nginx/html
 EXPOSE 8080
 ```
 
+最终镜像还包含了自定义 Nginx 配置（nginx-custom.conf），将访问日志格式化为 JSON 输出，便于后续日志系统采集。
+
 ### 四、运行容器（权限问题排查与解决）
 
 **核心问题**：容器启动后立即退出，`docker logs` 显示：

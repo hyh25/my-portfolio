@@ -7,7 +7,7 @@ categories: ['Linux运维', '日志系统']
 
 ### 日志系统搭建（Loki + Promtail）
 
-好的，我们专门针对 **日志系统（Loki + Promtail）的完整搭建过程** 做一份从头到尾的总结，包含所有操作命令、关键配置和踩坑记录。
+对 **日志系统（Loki + Promtail）的完整搭建过程** 做一份从头到尾的总结，包含所有操作命令、关键配置和踩坑记录。
 
 ---
 
@@ -235,7 +235,7 @@ docker run -d \
 | 3    | Loki 报 `allow_structured_metadata: false` 错误         | schema v11 需要关闭结构化元数据                                        | 在 `limits_config` 中添加该参数                                                   |
 | 4    | Promtail 报 `connection refused` 连接 Loki              | 容器内无法通过宿主机 IP（192.168.0.200）访问                           | 改用 `--network host` 和 `127.0.0.1`，并调整 `clients.url`                        |
 | 5    | Promtail 频繁重启（`invalid drop stage config`）        | 尝试使用 `drop` 或 `match` 阶段过滤日志，语法错误                      | 完全移除过滤阶段，采用最简配置（只采集，不解析）                                  |
-| 6    | Grafana 查询一直加载，无数据返回                        | Loki 速率限制（4MB/s）被大日志源压垮；容器时间不同步导致 JSON 解析失败 | 提高速率限制；改用 `docker logs` 重定向到普通文本文件，绕开 JSON 解析             |
+| 6    | Grafana 查询一直加载，无数据返回                        | Loki 速率限制（4MB/s）被大日志源压垮；容器时间不同步导致 JSON 解析失败 | 改用 `docker logs` 重定向到普通文本文件，配合 Nginx JSON 格式输出，实现稳定采集。 |
 | 7    | 重定向进程在虚拟机重启后丢失                            | `nohup` 进程不持久                                                     | 将命令添加到 `/etc/rc.local` 或写成 systemd 服务                                  |
 | 8    | 日志时间显示 UTC 而非北京时间                           | Loki 和 Promtail 容器未挂载 `/etc/localtime`                           | 启动容器时增加 `-v /etc/localtime:/etc/localtime:ro`，并确保 `mysite` 也挂载      |
 
